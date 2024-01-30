@@ -1,0 +1,1251 @@
+<script>
+    var loadingended=false;
+    var loading = {
+        start: function() {
+            var loadinghtml = document.createElement('div');
+            var loadinghtmltext = document.createElement('h1'); 
+            loadinghtmltext.innerHTML="LOADING...";
+            loadinghtmltext.setAttribute('id','loadingtext');
+            var loadinghtmlbg = document.createElement('div');
+            loadinghtmlbg.setAttribute('id','loadingbg')
+            loadinghtml.setAttribute('id','loading');
+            var newloadinghtmlbg = document.body.appendChild(loadinghtmlbg);
+            var newloadinghtml = document.body.appendChild(loadinghtml);
+            var newloadingtext = document.body.appendChild(loadinghtmltext);
+            function loadingfunc (timestamp){
+                if (!loadingended){
+                    if (timestamp>=64) {
+                        var len5=document.querySelectorAll('.boardrank div').length;
+                        document.querySelectorAll('.boardrank div').forEach(function(el,key,par){
+                            window.setTimeout(function(){
+                                if (el.parentElement!=null){
+                                    if (el.parentElement.children.length<2) {
+                                        el.parentElement.remove();
+                                    } else {
+                                        el.style.display="none";
+                                        el.remove();
+                                    }
+                                }
+                                if (key == len5-1){
+                                    loadingfunc(0);
+                                }
+                            },2 * key);
+                        });
+                    } else {
+                    if (timestamp % 8 == 0) {
+                        newloadinghtml.innerHTML+=`<div style="display:flex !important;margin:0px !important;padding:0px !important;" class="boardrank"></div>`;
+                    }
+                    if (timestamp % 2 == 0 && ((timestamp - (timestamp % 8)) / 8) % 2 != 0 ){
+                        window.setTimeout(function(){if(!loadingended){newloadinghtml.getElementsByClassName('boardrank')[newloadinghtml.getElementsByClassName('boardrank').length-1].innerHTML+=`<div style="background:#333;width:12.5vmin;height:12.5vmin;margin:0px !important;padding:0px !important;"></div>`;loadingfunc(timestamp+1);}},2.5);
+                    } else if (timestamp % 2 == 0 && ((timestamp - (timestamp % 8)) / 8) % 2 == 0) {
+                        window.setTimeout(function(){if(!loadingended){newloadinghtml.getElementsByClassName('boardrank')[newloadinghtml.getElementsByClassName('boardrank').length-1].innerHTML+=`<div style="background:#eee;width:12.5vmin;height:12.5vmin;margin:0px !important;padding:0px !important;"></div>`;
+                        loadingfunc(timestamp+1);}},2.5);
+                    } else if (((timestamp - (timestamp % 8)) / 8) % 2 != 0) {
+                        window.setTimeout(function(){if(!loadingended){newloadinghtml.getElementsByClassName('boardrank')[newloadinghtml.getElementsByClassName('boardrank').length-1].innerHTML+=`<div style="background:#eee;width:12.5vmin;height:12.5vmin;margin:0px !important;padding:0px !important;"></div>`;loadingfunc(timestamp+1);}},2.5);
+                    } else {
+                        window.setTimeout(function(){if(!loadingended){newloadinghtml.getElementsByClassName('boardrank')[newloadinghtml.getElementsByClassName('boardrank').length-1].innerHTML+=`<div style="background:#333;width:12.5vmin;height:12.5vmin;margin:0px !important;padding:0px !important;"></div>`;loadingfunc(timestamp+1);}},2.5);
+                    }}
+                }
+                    return timestamp;
+            }
+            newloadinghtmlbg.style.zIndex='15000';
+            newloadinghtmlbg.style.position='fixed';
+            newloadinghtmlbg.style.background=`#40485080`;
+            newloadinghtmlbg.style.height='100%';
+            newloadinghtmlbg.style.width='100%';
+            newloadinghtmlbg.style.left='0px';
+            newloadinghtmlbg.style.top='0px';
+            newloadinghtml.style.zIndex='20000';
+            newloadinghtml.style.position='fixed';
+            newloadinghtml.style.display='block';
+            newloadinghtml.style.display='80%';
+            newloadinghtml.style.left='10%';
+            newloadinghtml.style.top='10%';
+            newloadingtext.style.position='fixed';
+            newloadingtext.style.display='block';
+            newloadingtext.style.fontSize='400%';
+            newloadingtext.style.color='#050505';
+            newloadingtext.style.zIndex='3000000';
+            newloadingtext.style.width='100%';
+            newloadingtext.style.left='20%';
+            newloadingtext.style.top='40%';
+            loadingfunc(0);
+            return newloadinghtml;
+        },
+        complete: function() {
+            var loadingel = document.getElementById("loading");
+            loadingel.remove();
+            var loadingbg = document.getElementById("loadingbg");
+            loadingbg.remove();
+            var loadingtext = document.getElementById("loadingtext");
+            loadingtext.remove();
+        }
+    };
+    loading.start();
+    document.addEventListener("readystatechange", function(ev) {
+        console.log(document.readyState);
+        if (document.readyState === "complete") {
+            loading.complete();
+            loadingended=true;
+        }
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+<link rel="stylesheet" href="/ColourgreyShorterJS/chessboard-1.0.0.min.css">
+<script src="/ColourgreyShorterJS/pgnreader.js"></script>
+<link href="/ColourgreyShorterJS/ColourgreyShorter.css" rel="stylesheet">
+<script src="/ColourgreyShorterJS/ColourgreyShorterCSSJS.js"></script>
+<script src="/ColourgreyShorterJS/bootstrap.bundle.min.js"></script>
+<script src="/ColourgreyShorterJS/wiki_content.js"></script>
+<style>
+    chess-circle {
+        background: #02e06080;
+        border-radius: 50%;
+        width: 2em;
+        height: 2em;
+        display: block;
+        position: relative;
+        left: 0.875em;
+        top: 0.875em;
+    }
+    
+    #players table tr td:nth-child(1) {
+        width: 220px;
+    }
+    
+    #players table tr td:nth-child(2) {
+        width: 100px;
+    }
+    
+    #players table tr td:nth-child(2) span {
+        text-align: center;
+        font-size: 200%;
+    }
+    
+    #players table tr td:nth-child(3) {
+        width: 220px;
+    }
+    
+    .chessnote {
+        position: absolute;
+        margin-left: 20px;
+        margin-top: -5px;
+        --bordercolour: #224;
+        border: 0.75px double var(--bordercolour);
+        right: 0px;
+        text-align: center;
+        font-weight: bold !important;
+        font-size: 0.85em !important;
+        height: 2em;
+        width: 2em;
+        z-index: 75;
+    }
+    
+    .chessnote.nsss-5 {
+        background: #ff0236;
+        color: #eff;
+        border-radius: 80%;
+        --bordercolour: #455 !important;
+    }
+    
+    .chessnote.nsss-4 {
+        background: #ffb300;
+        color: #eee;
+        border-radius: 80%;
+        
+        --bordercolour: #444 !important;
+        
+    }
+    
+    .chessnote.nsss-3 {
+        background: #fff82a;
+        color: darkslategrey;
+        border-radius: 80%;
+        
+        --bordercolour: #abb !important;
+        
+    }
+    
+    .chessnote.nsss-2 {
+        background: #aa0caa;
+        color: #eee;
+        border-radius: 80%;
+        
+        --bordercolour: #444 !important;
+        
+    }
+    
+    .chessnote.nsss-1 {
+        background: #2032aa;
+        color: #eef;
+        border-radius: 80%;
+        
+        
+        --bordercolour: #445 !important;
+    }
+    
+    .chessnote.nsss-0 {
+        background: #00aabb;
+        color: #fee;
+        border-radius: 80%;
+        
+        
+    }
+    
+    @keyframes chessnoteAnimation {
+        from {
+            fill: var(--fillcolour);
+        }
+        
+        50% {
+            fill: #56789a;
+        }
+        
+        to {
+            fill: var(--fillcolour);
+        }
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-5 {
+        fill: #ff0236;
+        --fillcolour: #ff0236;
+        animation: chessnoteAnimation 0.3s 3;
+        color: #eff;
+        border-radius: 80%;
+        --bordercolour: #455 !important;
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-4 {
+        fill: #ffb300;
+        --fillcolour: #ffb300;
+        animation: chessnoteAnimation 0.3s 3;
+        color: #eee;
+        border-radius: 80%;
+        
+        --bordercolour: #444 !important;
+        
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-3 {
+        fill: #fff82a;
+        --fillcolour: #fff82a;
+        animation: chessnoteAnimation 0.3s 3;
+        color: darkslategrey;
+        border-radius: 80%;
+        
+        --bordercolour: #abb !important;
+        
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-2 {
+        fill: #aa0caa;
+        --fillcolour: #aa0caa;
+        animation: chessnoteAnimation 0.3s 3;
+        color: #eee;
+        border-radius: 80%;
+        
+        --bordercolour: #444 !important;
+        
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-1 {
+        fill: #2032aa;
+        --fillcolour: #2032aa;
+        animation: chessnoteAnimation 0.3s 3;
+        color: #eef;
+        border-radius: 80%;
+        
+        
+        --bordercolour: #445 !important;
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-0 {
+        fill: #00aabb;
+        --fillcolour: #00aabb;
+        animation: chessnoteAnimation 0.3s 3;
+        color: #fee;
+        border-radius: 80%;
+        
+        
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-n {
+        z-index: 0 !important;
+        position: static !important;
+        height: 0px !important;
+        width: 0px !important;
+        border: none;
+    }
+    
+    .comment-bubble svg path.chessnote.nsss-0 {}
+    
+    .piece-417db {
+        position: relative;
+        top: 1px;
+        right: 1px;
+    }
+    
+    splitel {
+        background: #222;
+        width: 1px;
+        z-index: 1;
+        height: inherit;
+    }
+    
+    .comment-bubble,
+    comment-bubble svg {
+        position: absolute;
+        bottom: 1em;
+        left: 2.25em;
+        z-index: 50;
+        visibility: visible;
+        word-break: break-all;
+    }
+</style>
+<nav class="navbar navbar-expand-lg bg-body-tertiary bluenav" style="z-index:30 !important;
+    box-shadow: 0px 1rem 0.8rem 0.8rem #75759080;">
+    <div class="container-fluid">
+        <a class="navbar-brand nomarginright" href="/" style="margin-right:0px !important;width:6rem !important;--bs-navbar-brand-margin-end:0px !important;text-align:center;padding-right:0px !important;">CommonWiki</a>
+        <div class="navbar-nav_wrap navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/<%- info.type%>/<%- info.docname %>"><%- (info.type=='edit') ? 'Edit document' : 'View document' %></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chess/puzzle">chess puzzle</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        wiki menu
+                    </a>
+                    <ul class="dropdown-menu"><% if (info.type!="edit") { %>
+                        <li><a class="dropdown-item" href="#" id="adding_style_trigger">add style</a></li>
+                        <li><a class="dropdown-item" href="#" id="inserting_js_trigger">insert script</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="colour_picker_trigger">colour picker</a></li> <% } else { %>
+                        <li><a class="dropdown-item" href="/backlinks/<%- info.docname%>">view all backlinks to this doc</a>
+                        </li>
+                        <li><a class="dropdown-item" href="/history/<%- info.docname %>?r=justlist">view document history</a></li>
+                        <li><a class="dropdown-item" href="/docs">400 documents edited most recently</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><input type="text" id="find_texts"><br><a class="dropdown-item" href="#">find texts</a></li> <% }%>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <% if (!info.admin){ %> " disabled" <% }%>" <% if (info.admin){ %> href="/admin_page" <% }%> aria-disabled="<% if (!info.admin) { %> " true" <% } %>">admin page <% if (!info.admin) {%> disabled <%}%> </a>
+                </li>
+                <form class="d-flex navform" role="search" name="search_in_wiki" id="search_in_wiki">
+                    <div class="search-wrap">
+                        <input class="form-control me-2 navinp" type="text" placeholder="Search or go to document" aria-label="Search" onkeyup="document.getElementById('search_link').href = '/wiki/'+event.target.value">
+                        <div id="search_autocomp_results"></div>
+                    </div>
+                    <a class="btn btn-outline-danger btn-info" type="submit" href="#" id="search_link">Search!</a>
+                </form>
+                <%- info.me %>
+            </ul>
+            
+        </div>
+    </div>
+    
+</nav>
+<script src="/ColourgreyShorterJS/colourpicker.js"></script>
+<script src="/ColourgreyShorterJS/chess2.js"></script>
+<script src="/ColourgreyShorterJS/chessboard-1.0.0.min.js"></script>
+<script src="/ColourgreyShorterJS/socket.io/socket.io.min.js"></script>
+
+<script>
+var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
+    var socket = io();
+    var pgnreader = new colourgreyPGN();
+    globalThis['chessboards'] = [];
+    
+    function gamefunc(idx) {
+        return chessboards[idx].game;
+    }
+    
+    function boardfunc(idx) {
+        return chessboards[idx].board;
+    }
+    window.addEventListener("DOMContentLoaded", function(ev) {
+        var iy = 0;
+        document.querySelectorAll(`chessboard`).forEach(function(el, key, parel) {
+            var fenpos = el.getAttribute("fen");
+            var pgnhist = el.getAttribute("pgn");
+            el.setAttribute("tabindex", `${key}`);
+            if (typeof el.parentElement.classList=='object'){
+                if (typeof el.parentElement.classList.contains=='function'){
+                    if (el.parentElement.classList.contains('chess-real-game')==true){
+                        el.setAttribute("data-real-game","true");
+                    }
+                }
+            }
+            if (typeof fenpos == 'string' && new Chess().load(fenpos) != false) {
+                var newche = new Chess(fenpos);
+                var newbo = Chessboard(el, {
+                    draggable: true,
+                    onDrop: function(source, target) {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var promotion = 'q';
+                        var files = {a:0,b:1,c:2,d:3,e:4,f:5,g:6,h:7};
+                        var ranks = {'1':7,'2':6,'3':5,'4':4,'5':3,'6':2,'7':1,'8':0};
+                        console.log(game.board()[ranks[source[1]]][files[source[0]]]);
+                        /*if (game.board()[ranks[source[1]]][files[source[0]]]!=null){
+                            if (game.board()[ranks[source[1]]][files[source[0]]].type=='p' && ((game.board()[ranks[source[1]]][files[source[0]]].colour == 'w' && target[1]=='8') || (game.board()[ranks[source[1]]][files[source[0]]].colour=='b'&&target[1]=='1'))){
+                                var newselect = document.createElement("div");
+                                newselect.innerHTML=(typeof document.getEl_TagName('chessboard')[key].getAttribute('promotion')!='string'||document.getEl_TagName('chessboard')[key].getAttribute('promotion')=='')?`<select><option disabled>Select what piece this pawn promotes to</option><option value='q'>Q</option><option value='r'>R</option><option value='b'>B</option><option value='n'>N</option></select>`:(function(){var rtv='<select><option>Select what piece this pawn promotes to</option>';document.getEl_TagName('chessboard')[key].getAttribute('promotion').split('').forEach(function(val,idx,arr){rtv+=`<option value=${val}>${val}</option>`});rtv+=`</select>`;return rtv;})();
+                                newselect.setAttribute('class','popover-box');
+                                newselect.style.fontSize='150%';
+                                var newselecta = document.getEl_Class('body')[0].appendChild(newselect);
+                                var thisobj0 = this;
+                                newselecta.getEl_TagName('select')[0].addEventListener('change',function(ev){
+                                    promotion=this.value;
+                                    console.log(promotion);
+                                    var move = game.move({
+                                        from: source,
+                                        to: target,
+                                        promotion:promotion 
+                                    });
+                                    if (move === null) return 'snapback';
+                                    thisobj0.updateStatus();
+                                    this.parentElement.remove();
+                                    thisobj0.onSnapEnd();
+                                });
+                            } else {
+                                var move = game.move({
+                                    from: source,
+                                    to: target,
+                                    promotion:promotion
+                                });
+
+                                if (move === null) return 'snapback'
+                        
+                                this.updateStatus();
+                            }
+                            
+                                
+                        }*/var move = game.move({
+                                    from: source,
+                                    to: target,
+                                    promotion:'q'
+                                });
+
+                                if (move === null) return 'snapback'
+                        
+                                this.updateStatus();
+                    },
+                    onSnapEnd: function() {
+                        var game = gamefunc(parseInt(key));
+                        var board = boardfunc(parseInt(key));
+                        board.position(game.fen());
+                    },
+                    onDragStart: function(source, piece, position, orientation) {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var thisobj = this;
+                        // do not pick up pieces if the game is over
+                        if (game.game_over() && ( el.getAttribute("data-real-game")=="true"||el.getAttribute("data-real-game")==true)) return false
+                        
+                        // only pick up pieces for the side to move
+                        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+                            return false;
+                        }
+                        board.clearCircles();
+                        game.moves({
+                            source:source,
+                            verbose: true
+                        }).forEach(function(element) {
+                            if (element.from == source) {
+                                board.addCircle(element.to);
+                                var source2 = document.getEl_Attr("data-square", element.to)[key];
+                                source2.addEventListener("click", function(ev) {
+                                    thisobj.onDrop(source, element.to);
+                                    thisobj.onSnapEnd();
+                                });
+                                var boardEl = document.getElementsByTagName("chessboard")[key];
+                                boardEl.querySelectorAll("[data-piece]").forEach(function(val, idx, arr) {
+                                    if (val.parentElement.getAttribute("data-square") != element.to) {
+                                        boardEl.getEl_Attr("data-square", element.to)[0].removeEventListener("click", function(ev) {
+                                            thisobj.onDrop(source, element.to);
+                                            thisobj.onSnapEnd();
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    updateStatus: function() {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var status = ''
+                        board.clearCircles();
+                        var moveColor = 'White'
+                        if (game.turn() === 'b') {
+                            moveColor = 'Black'
+                        }
+                        
+                        // checkmate?
+                        if (game.in_checkmate()) {
+                            status = 'Game over, ' + moveColor + ' is in checkmate.'
+                        }
+                        
+                        // draw?
+                        else if (game.in_draw()) {
+                            status = 'Game over, drawn position'
+                        }
+                        
+                        // game still on
+                        else {
+                            status = moveColor + ' to move'
+                            
+                            // check?
+                            if (game.in_check()) {
+                                status += ', ' + moveColor + ' is in check'
+                            }
+                        }
+                    },
+                    pieceTheme: function pieceTheme(piece) {
+                        return '/ColourgreyShorterJS/fairychess/chess/files/img/chesspieces/wikipedia/' + piece + '.png';
+                    },
+                    position: (function() {
+                        return newche.fen()
+                    })(),
+                    
+                    
+                });
+                newbo.addCircle = function(to) {
+                    var $circle = document.querySelectorAll("chessboard")[key].querySelector("[data-square='" + to + "']");
+                    if ($circle != undefined) {
+                        var circle = $circle.innerHTML;
+                        if (!circle.includes("img")) {
+                            $circle.innerHTML = ($circle.innerHTML + "<chess-circle></chess-circle>");
+                        } else {
+                            $circle.classList.add('highlight-black');
+                        }
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearCircles = function() {
+                    var $circles = document.querySelectorAll("chessboard [data-square]");
+                    if ($circles != undefined) {
+                        $circles.forEach(function(element) {
+                            var circle = element.innerHTML;
+                            circle = circle.replace('<chess-circle></chess-circle>', '');
+                            circle = circle.replace('<chess-eat></chess-eat>', '');
+                            element.innerHTML = (circle);
+                            element.classList.remove('highlight-black');
+                        });
+                    } else {
+                        return null;
+                    }
+                }
+                newbo.addNote = function(to, noteparam) {
+                    var $Notes = el.getEl_Attr("data-square", to)[0];
+                    if ($Notes != undefined && $Notes != null) {
+                        var Notes = $Notes.innerHTML;
+                        $Notes.innerHTML = ($Notes.innerHTML + `<div class="nsss-${noteparam.m} chessnote">${noteparam.t}</div>`);
+                        
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearNotes = function() {
+                    var $Notess = $(".chessnote");
+                    if ($Notess != undefined) {
+                        $Notess.each(function(index, element) {
+                            var Notes = $(element).html();
+                            console.log("deleted note");
+                            Notes = Notes.replace('<chess-Notes></chess-Notes>', '');
+                            $(element).removeClass("chessnote");
+                            $(element).html("");
+                        });
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.addComment = function(to, msg) {
+                    var $commentSquare = el.getEl_Attr("data-square", to)[0];
+                    if ($commentSquare != undefined && $commentSquare != null) {
+                        var sqinner = $commentSquare.innerHTML;
+                        var classattr = ``;
+                        if (typeof msg.note == 'number' && msg.note != 6) {
+                            classattr += `class="nsss-${msg.note} chessnote"`;
+                        }
+                        $commentSquare.innerHTML += `<div class="comment-bubble"><svg height="120" width="120">
+                                <path d="M6 105 L18 93 C18 93 0 48 60 51 96 51 135 96 36 96 L36 96 L6 105Z" stroke="#050505" stroke-width="1.2" fill="#e0e0e0" ${classattr}></path>
+                                <foreignObject style="word-break:break-all;" height="40.5" width="75" y="60" x="22.5" font-size="80" font-family="sans-serif">
+                                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size:0.12em !important;word-break:break-all;color:#050505;font-weight:700;">${msg.message}</div>
+                                </foreignObject>
+                            </svg></div>`;
+                        var svgs = el.querySelectorAll(`svg, svg *`);
+                        
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearComments = function() {
+                    var $commentSquares = $("[data-square] .comment-bubble");
+                    if ($commentSquares != undefined && $commentSquares != null) {
+                        $commentSquares.each(function(index, element) {
+                            $(element).remove();
+                        });
+                    } else {
+                        return null;
+                    }
+                };
+                var gamemoves3 = [];
+                if (typeof pgnhist == 'string') {
+                    gamemoves3 = (function() {
+                        var rtv1 = [];
+                        
+                        var pgnhist2 = pgnhist.replaceAll(/\[(.*?)\]/gmi, ``);
+                        var rtv2 = pgnhist2;
+                        rtv2 = rtv2.replaceAll(/ [0-9]/gmi, `|`).replaceAll(/ /gmi, `|`).replaceAll(/[0-9]\./gmi, `|`);
+                        if (rtv2.match(/ [0-9]/gmi) != null) {
+                            rtv2.match(/ [0-9]/gmi).forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(val, `|`);
+                            });
+                        }
+                        if (rtv2.match(/[0-9]\./gmi) != null) {
+                            rtv2.match(/[0-9]\./gmi).forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(val, `|`);
+                            });
+                        }
+                        rtv2 = rtv2.replaceAll(`.`, `|`);
+                        var doublepipematches = rtv2.match(`||`);
+                        if (doublepipematches != null) {
+                            doublepipematches.forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(`||`, `|`)
+                            });
+                        }
+                        rtv2 = rtv2.replaceAll(` `, ``);
+                        var rtv4 = rtv2.split(`|`);
+                        var rtv3 = [];
+                        rtv4.forEach(function(val, idx, arr) {
+                            if (val != '') {
+                                rtv3.push(val.replace(` `, ``));
+                            }
+                        });
+                        rtv1 = rtv3;
+                        rtv1.forEach(function(val, idx, arr) {
+                            if (val.includes(" ")) {
+                                rtv1[idx] = val.replaceAll(" ", "");
+                            }
+                        });
+                        return rtv1;
+                    })();
+                    if (gamemoves3.length == 1 && gamemoves3[0] == '') {
+                        gamemoves3 = [];
+                    }
+                }
+                chessboards.push({
+                    game: newche,
+                    board: newbo,
+                    parsedpgn: pgnreader.rtparsedpgn(el.getAttribute("pgn")),
+                    moves: pgnreader.rtparsedpgn(el.getAttribute("pgn")).gamehistorywr,
+                    thisi: -1,
+                    move: function() {
+                        this.board.clearNotes();
+                        this.board.clearComments();
+                        var thisobj0 = this;
+                        if (this.thisi <= this.moves.length) {
+                            this.thisi++
+                            if (this.thisi < -1) {
+                                this.thisi++
+                            }
+                            var rtm = this.game.move(thisobj0.moves[thisobj0.thisi]);
+                            
+                            var commentnote = 6;
+                            this.board.position(thisobj0.game.fen());
+                            if (typeof rtm == 'object' && rtm != null && thisobj0.parsedpgn.notes[thisobj0.thisi] != 6) {
+                                this.board.addNote(rtm.to, {
+                                    m: pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.thisi]].m,
+                                    t: pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.thisi]].t
+                                });
+                                commentnote = pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.thisi]].m;
+                            }
+                            if (typeof rtm == 'object' && rtm != null && typeof thisobj0.parsedpgn.comments[thisobj0.thisi] == 'string' && thisobj0.parsedpgn.comments[thisobj0.thisi] != '') {
+                                this.board.addComment(rtm.to, {
+                                    message: thisobj0.parsedpgn.comments[thisobj0.thisi],
+                                    note: commentnote
+                                });
+                            }
+                            return rtm;
+                        } else {
+                            return false;
+                        }
+                    },
+                    undo: function() {
+                        this.board.clearNotes();
+                        var thisobj0 = this;
+                        if (this.thisi >= 0) {
+                            if (this.thisi >= this.moves.length) {
+                                this.thisi--
+                            }
+                            var rtm = this.game.undo();
+                            this.board.position(thisobj0.game.fen());
+                            this.thisi--
+                            return rtm;
+                        } else {
+                            return false;
+                        }
+                    },
+                    playbool: false,
+                    play(speed) {
+                        var thisobj0 = this;
+                        var newspeed = 800;
+                        if (typeof speed == 'number' && !isNaN(speed)) {
+                            newspeed = speed;
+                        }
+                        window.setTimeout(function() {
+                            if (thisobj0.playbool) {
+                                var thismove0 = thisobj0.move();
+                                if (thismove0 == false) {
+                                    thisobj0.playbool = false;
+                                } else {
+                                    thisobj0.play(newspeed);
+                                }
+                            }
+                        }, newspeed);
+                        /* 속도를 조절하는 매개변수 안넣고 사용할 시, 0.8초 즉 800밀리초마다 움직임. */
+                    },
+                    stop_play(delay, speed) {
+                        var thisobj0 = this;
+                        var newdelay = 1200;
+                        if (typeof delay == 'number' && !isNaN(delay)) {
+                            newdelay = delay;
+                        }
+                        var newspeed = 800;
+                        if (typeof speed == 'number' && !isNaN(speed)) {
+                            newspeed = speed;
+                        }
+                        if (this.playbool) {
+                            this.playbool = false;
+                        } else {
+                            this.playbool = true;
+                            window.setTimeout(function() {
+                                thisobj0.play(newspeed);
+                            }, newdelay);
+                        }
+                    },
+                    el: el,
+                });
+                /* var chessbutton=function(){var rtv=document.createElement("button");return rtv;}
+                var btnGroupPr=document.createElement("div");
+                btnGroupPr.setAttribute("class","btn-group chessBtns");
+                var btnGroup = el.appendChild(btnGroupPr);
+                btnGroup.innerHTML="";
+                var chessStartBtnPr=chessbutton();
+                chessStartBtnPr.setAttribute("class","btn btn-primary");
+                chessStartBtnPr.setAttribute("onclick",`chessboards[${key}].el.getEl_Class('chessBtns')[0].show_hide("")`);
+                var chessStartBtn = el.appendChild(chessStartBtnPr); */
+                el.addEventListener("keyup", function(ev) {
+                    if (ev.keyCode == 65) {
+                        chessboards[key].undo();
+                    }
+                    if (ev.keyCode == 68) {
+                        chessboards[key].move();
+                    }
+                    if (ev.keyCode == 87) {
+                        chessboards[key].playbool = true;
+                        chessboards[key].play();
+                    }
+                    if (ev.keyCode == 83) {
+                        chessboards[key].stop_play();
+                    }
+                });
+            } else {
+                var newche = new Chess();
+                var newbo = Chessboard(el, {
+                    draggable: true,
+                    onDrop: function(source, target) {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var promotion = 'q';
+                        var files = {a:0,b:1,c:2,d:3,e:4,f:5,g:6,h:7};
+                        var ranks = {'1':7,'2':6,'3':5,'4':4,'5':3,'6':2,'7':1,'8':0};
+                        console.log(game.board()[files[source[0]]][ranks[source[1]]]);
+                        /*if (game.board()[files[source[0]]][ranks[source[1]]]!=null){
+                            if (game.board()[ranks[source[1]]][files[source[0]]].type=='p' && ((game.board()[files[source[0]]][ranks[source[1]]].colour == 'w' && target[1]=='8') || (game.board()[files[source[0]]][ranks[source[1]]].colour=='b'&&target[1]=='1'))){
+                                var newselect = document.createElement("div");
+                                newselect.innerHTML=(typeof document.getEl_TagName('chessboard')[key].getAttribute('promotion')!='string'||document.getEl_TagName('chessboard')[key].getAttribute('promotion')=='')?`<select><option disabled>Select what piece this pawn promotes to</option><option value='q'>Q</option><option value='r'>R</option><option value='b'>B</option><option value='n'>N</option></select>`:(function(){var rtv='<select><option>Select what piece this pawn promotes to</option>';document.getEl_TagName('chessboard')[key].getAttribute('promotion').split('').forEach(function(val,idx,arr){rtv+=`<option value=${val}>${val}</option>`});rtv+=`</select>`;return rtv;})();
+                                newselect.setAttribute('class','popover-box');
+                                newselect.style.fontSize='150%';
+                                var newselecta = document.getEl_Class('body')[0].appendChild(newselect);
+                                var thisobj0 = this;
+                                newselecta.getEl_TagName('select')[0].addEventListener('change',function(ev){
+                                    promotion=this.value;
+                                    console.log(promotion);
+                                    var move = game.move({
+                                        from: source,
+                                        to: target,
+                                        promotion:promotion 
+                                    });
+                                    if (move === null) return 'snapback';
+                                    thisobj0.updateStatus();
+                                    
+                                    this.parentElement.remove();
+                                    thisobj0.onSnapEnd();
+                                });
+                            } else {
+                                var move = game.move({
+                                    from: source,
+                                    to: target,
+                                    promotion:promotion
+                                });
+
+                                if (move === null) return 'snapback'
+                        
+                                this.updateStatus();
+                            }
+                        }*/
+                        
+                                var move = game.move({
+                                    from: source,
+                                    to: target,
+                                    promotion:'q'
+                                });
+
+                                if (move === null) return 'snapback'
+                        
+                                this.updateStatus();
+                    },
+                    onSnapEnd: function() {
+                        var game = gamefunc(parseInt(key));
+                        var board = boardfunc(parseInt(key));
+                        board.position(game.fen());
+                    },
+                    onDragStart: function(source, piece, position, orientation) {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var thisobj = this;
+                        // do not pick up pieces if the game is over
+                        if (game.game_over() && ( el.getAttribute("data-real-game")=="true"||el.getAttribute("data-real-game")==true)) return false
+                        
+                        // only pick up pieces for the side to move
+                        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+                            return false;
+                        }
+                        board.clearCircles();
+                        game.moves({
+                            source:source,
+                            verbose: true
+                        }).forEach(function(element) {
+                            if (element.from == source) {
+                                board.addCircle(element.to);
+                                var source2 = document.getEl_Attr("data-square", element.to)[key];
+                                source2.addEventListener("click", function(ev) {
+                                    thisobj.onDrop(source, element.to);
+                                    thisobj.onSnapEnd();
+                                });
+                                var boardEl = document.getElementsByTagName("chessboard")[key];
+                                boardEl.querySelectorAll("[data-piece]").forEach(function(val, idx, arr) {
+                                    if (val.parentElement.getAttribute("data-square") != element.to) {
+                                        boardEl.getEl_Attr("data-square", element.to)[0].removeEventListener("click", function(ev) {
+                                            thisobj.onDrop(source, element.to);
+                                            thisobj.onSnapEnd();
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    updateStatus: function() {
+                        var board = boardfunc(parseInt(key));
+                        var game = gamefunc(parseInt(key));
+                        var status = ''
+                        board.clearCircles();
+                        var moveColor = 'White'
+                        if (game.turn() === 'b') {
+                            moveColor = 'Black'
+                        }
+                        
+                        // checkmate?
+                        if (game.in_checkmate()) {
+                            status = 'Game over, ' + moveColor + ' is in checkmate.'
+                        }
+                        
+                        // draw?
+                        else if (game.in_draw()) {
+                            status = 'Game over, drawn position'
+                        }
+                        
+                        // game still on
+                        else {
+                            status = moveColor + ' to move'
+                            
+                            // check?
+                            if (game.in_check()) {
+                                status += ', ' + moveColor + ' is in check'
+                            }
+                        }
+                    },
+                    pieceTheme: function pieceTheme(piece) {
+                        return '/ColourgreyShorterJS/fairychess/chess/files/img/chesspieces/wikipedia/' + piece + '.png';
+                    },
+                    position: (function() {
+                        return newche.fen()
+                    })(),
+                    
+                    
+                    
+                });
+                newbo.addCircle = function(to) {
+                    var $circle = document.querySelectorAll("chessboard")[key].querySelector("[data-square='" + to + "']");
+                    if ($circle != undefined) {
+                        var circle = $circle.innerHTML;
+                        if (!circle.includes("img")) {
+                            $circle.innerHTML = ($circle.innerHTML + "<chess-circle></chess-circle>");
+                        } else {
+                            $circle.classList.add('highlight-black');
+                        }
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearCircles = function() {
+                    var $circles = document.querySelectorAll("chessboard [data-square]");
+                    if ($circles != undefined) {
+                        $circles.forEach(function(element) {
+                            var circle = element.innerHTML;
+                            circle = circle.replace('<chess-circle></chess-circle>', '');
+                            circle = circle.replace('<chess-eat></chess-eat>', '');
+                            element.innerHTML = (circle);
+                            element.classList.remove('highlight-black');
+                        });
+                    } else {
+                        return null;
+                    }
+                }
+                newbo.addNote = function(to, noteparam) {
+                    var $Notes = el.getEl_Attr("data-square", to)[0];
+                    if ($Notes != undefined) {
+                        var Notes = $Notes.innerHTML;
+                        $Notes.innerHTML = ($Notes.innerHTML + `<div class="nsss-${noteparam.m} chessnote">${noteparam.t}</div>`);
+                        
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearNotes = function() {
+                    var $Notess = $(".chessnote");
+                    if ($Notess != undefined) {
+                        $Notess.each(function(index, element) {
+                            var Notes = $(element).html();
+                            console.log("deleted note");
+                            Notes = Notes.replace('<chess-Notes></chess-Notes>', '');
+                            $(element).removeClass("chessnote");
+                            $(element).html("");
+                        });
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.addComment = function(to, msg) {
+                    var $commentSquare = el.getEl_Attr("data-square", to)[0];
+                    if ($commentSquare != undefined && $commentSquare != null) {
+                        var sqinner = $commentSquare.innerHTML;
+                        var classattr = ``;
+                        if (typeof msg.note == 'number' && msg.note != 6) {
+                            classattr += `class="nsss-${msg.note} chessnote"`;
+                        }
+                        $commentSquare.innerHTML += `<div class="comment-bubble"><svg height="120" width="120">
+                                <path d="M6 105 L18 93 C18 93 0 48 60 51 96 51 135 96 36 96 L36 96 L6 105Z" stroke="#050505" stroke-width="1.2" fill="#e0e0e0" ${classattr}></path>
+                                <foreignObject style="word-break:break-all;" height="40.5" width="75" y="60" x="22.5" font-size="80" font-family="sans-serif">
+                                    <div xmlns="http://www.w3.org/1999/xhtml" style="font-size:0.12em !important;word-break:break-all;color:#050505;font-weight:700;">${msg.message}</div>
+                                </foreignObject>
+                            </svg></div>`;
+                        var svgs = el.querySelectorAll(`svg, svg * `);
+                    } else {
+                        return null;
+                    }
+                };
+                newbo.clearComments = function() {
+                    var $commentSquares = $("[data-square] .comment-bubble");
+                    if ($commentSquares != undefined && $commentSquares != null) {
+                        $commentSquares.each(function(index, element) {
+                            $(element).remove();
+                        });
+                    } else {
+                        return null;
+                    }
+                };
+                var gamemoves3 = [];
+                if (typeof pgnhist == 'string') {
+                    gamemoves3 = (function() {
+                        var rtv1 = [];
+                        var pgnhist2 = pgnhist.replaceAll(/\[(.*?)\]/gmi, `
+                                            `);
+                        var rtv2 = pgnhist2;
+                        rtv2 = rtv2.replaceAll(/ [0-9]/gmi, ` | `).replaceAll(/ /gmi, ` | `).replaceAll(/[0-9]\./gmi, ` | `);
+                        if (rtv2.match(/ [0-9]/gmi) != null) {
+                            rtv2.match(/ [0-9]/gmi).forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(val, ` | `);
+                            });
+                        }
+                        if (rtv2.match(/[0-9]\./gmi) != null) {
+                            rtv2.match(/[0-9]\./gmi).forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(val, ` | `);
+                            });
+                        }
+                        rtv2 = rtv2.replaceAll(`.
+                                            `, ` | `);
+                        var doublepipematches = rtv2.match(` || `);
+                        if (doublepipematches != null) {
+                            doublepipematches.forEach(function(val, idx, arr) {
+                                rtv2 = rtv2.replace(` || `, ` | `)
+                            });
+                        }
+                        rtv2 = rtv2.replaceAll(`
+                                            `, `
+                                            `);
+                        var rtv4 = rtv2.split(` | `);
+                        var rtv3 = [];
+                        rtv4.forEach(function(val, idx, arr) {
+                            if (val != '') {
+                                rtv3.push(val.replace(`
+                                            `, `
+                                            `));
+                            }
+                        });
+                        rtv1 = rtv3;
+                        rtv1.forEach(function(val, idx, arr) {
+                            if (val.includes(" ")) {
+                                rtv1[idx] = val.replaceAll(" ", "");
+                            }
+                        });
+                        return rtv1;
+                    })();
+                    if (gamemoves3.length == 1 && gamemoves3[0] == '') {
+                        gamemoves3 = [];
+                    }
+                }
+                chessboards.push({
+                    game: newche,
+                    board: newbo,
+                    parsedpgn: pgnreader.rtparsedpgn(el.getAttribute("pgn")),
+                    moves: pgnreader.rtparsedpgn(el.getAttribute("pgn")).gamehistorywr,
+                    thisi: -1,
+                    move: function() {
+                        this.board.clearNotes();
+                        var thisobj0 = this;
+                        if (this.thisi <= this.moves.length) {
+                            this.thisi++
+                            if (this.thisi < -1) {
+                                this.thisi++
+                            }
+                            var rtm = this.game.move(thisobj0.moves[thisobj0.thisi]);
+                            var commentnote = 6;
+                            this.board.position(thisobj0.game.fen());
+                            if (typeof rtm == 'object' && rtm != null && thisobj0.parsedpgn.notes[thisobj0.thisi] != 6) {
+                                this.board.addNote(rtm.to, {
+                                    m: pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.thisi]].m,
+                                    t: pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.thisi]].t
+                                });
+                                commentnote = pgnreader.notes[thisobj0.parsedpgn.notes[thisobj0.this]].m;
+                            }
+                            if (typeof rtm == 'object' && rtm != null && typeof thisobj0.parsedpgn.comments[thisobj0.thisi] == 'string' && thisobj0.parsedpgn.comments[thisobj0.thisi] != null) {
+                                this.board.addComment(rtm.to, {
+                                    message: thisobj0.parsedpgn.comments[thisobj0.thisi],
+                                    note: commentnote,
+                                });
+                            }
+                            return rtm;
+                        } else {
+                            return false;
+                        }
+                    },
+                    undo: function() {
+                        this.board.clearNotes();
+                        var thisobj0 = this;
+                        if (this.thisi >= 0) {
+                            if (this.thisi >= this.moves.length) {
+                                this.thisi--
+                            }
+                            var rtm = this.game.undo();
+                            this.board.position(thisobj0.game.fen());
+                            this.thisi--
+                            return rtm;
+                        } else {
+                            return false;
+                        }
+                    },
+                    playbool: false,
+                    play(speed) {
+                        var thisobj0 = this;
+                        var newspeed = 800;
+                        if (typeof speed == 'number' && !isNaN(speed)) {
+                            newspeed = speed;
+                        }
+                        window.setTimeout(function() {
+                            if (thisobj0.playbool) {
+                                var thismove0 = thisobj0.move();
+                                if (thismove0 == false) {
+                                    thisobj0.playbool = false;
+                                } else {
+                                    thisobj0.play(newspeed);
+                                }
+                            }
+                        }, newspeed);
+                        /* 속도를 조절하는 매개변수 안넣고 사용할 시, 0.8초 즉 800밀리초마다 움직임. */
+                    },
+                    stop_play(delay, speed) {
+                        var thisobj0 = this;
+                        var newdelay = 1200;
+                        if (typeof delay == 'number' && !isNaN(delay)) {
+                            newdelay = delay;
+                        }
+                        var newspeed = 800;
+                        if (typeof speed == 'number' && !isNaN(speed)) {
+                            newspeed = speed;
+                        }
+                        if (this.playbool) {
+                            this.playbool = false;
+                        } else {
+                            this.playbool = true;
+                            window.setTimeout(function() {
+                                thisobj0.play(newspeed);
+                            }, newdelay);
+                        }
+                    },
+                    el: el,
+                });
+                /* var chessbutton=function(){var rtv=document.createElement("button");return rtv;}
+                var btnGroupPr=document.createElement("div");
+                btnGroupPr.setAttribute("class","btn-group chessBtns");
+                var btnGroup = el.appendChild(btnGroupPr);
+                btnGroup.innerHTML="";
+                var chessStartBtnPr=chessbutton();
+                chessStartBtnPr.setAttribute("class","btn btn-primary");
+                chessStartBtnPr.setAttribute("onclick",`
+                                            chessboards[$ {
+                                                key
+                                            }].el.getEl_Class('chessBtns')[0].show_hide("")`);
+                var chessStartBtn = el.appendChild(chessStartBtnPr); */
+                el.addEventListener("keyup", function(ev) {
+                    if (ev.keyCode == 65) {
+                        chessboards[key].undo();
+                    }
+                    if (ev.keyCode == 68) {
+                        chessboards[key].move();
+                    }
+                    if (ev.keyCode == 87) {
+                        chessboards[key].playbool = true;
+                        chessboards[key].play();
+                    }
+                    if (ev.keyCode == 83) {
+                        chessboards[key].stop_play();
+                    }
+                });
+            }
+        });
+        if (document.querySelector(`.wiki-content .document`)!=null){
+            document.querySelector(`.wiki-content .document`).setAttribute("data-paraparent", "true");
+        }
+        
+        document.querySelectorAll(`.wiki-content .document .para h1`).forEach(function(el, key, parel) {
+            el.parentElement.querySelector(`span`).outerHTML += `<a href="#h-${key}">${key}. </a>`;
+            el.parentElement.setAttribute("id", `h-${key}`);
+            el.parentElement.querySelectorAll(`.para h2`).forEach(function(el1, key1, parel1) {
+                el1.querySelector(`span`).outerHTML += `<a href="#h-${key}.${key1}">${key}.${key1}. </a>`;
+                el1.parentElement.setAttribute("id", `h-${key}.${key1}`);
+                el1.parentElement.querySelectorAll(` .para h3`).forEach(function(el2, key2, parel2) {
+                    el2.querySelector(`span`).outerHTML += `<a href="#h-${key}.${key1}.${key2}">${key}.${key1}.${key2}. </a>`;
+                    el2.parentElement.setAttribute("id", `h-${key}.${key1}.${key2}`);
+                    el2.parentElement.querySelectorAll(`.para h4`).forEach(function(el3, key3, parel3) {
+                        el3.querySelector(`span`).outerHTML += `<a href="#h-${key}.${key1}.${key2}.${key3}">${key}.${key1}.${key2}.${key3}. </a>`;
+                        el3.parentElement.setAttribute("id", `h-${key}.${key1}.${key2}.${key3}`);
+                    });
+                });
+            });
+        });
+        if(document.querySelector(`.docheader`)!=null){
+
+        
+        document.querySelector(`.docheader`).innerHTML += (function() {
+            var rtv = '<ul><li><h4>목차</h4></li>';
+            document.querySelectorAll(`.wiki-content .document .para h1`).forEach(function(val, idx, arr) {
+                rtv += `<li><a href="#h-${idx}">${idx}.</a> ${val.querySelector(`.para-title`).innerHTML}<li>`;
+                val.parentElement.querySelectorAll(`.para h2`).forEach(function(val1, idx1, arr1) {
+                    rtv += `<li><a href="#h-${idx}.${idx1}">${idx}.${idx1}.</a> ${val1.querySelector(`.para-title`).innerHTML}<li>`;
+                    val1.parentElement.querySelectorAll(`.para h3`).forEach(function(val2, idx2, arr2) {
+                        rtv += `<li><a href="#h-${idx}.${idx1}.${idx2}">${idx}.${idx1}.${idx2}.</a> ${val2.querySelector(`.para-title`).innerHTML}<li>`;
+                        val1.parentElement.querySelectorAll(`.para h4`).forEach(function(val3, idx3, arr3) {
+                            rtv += `<li><a href="#h-${idx}.${idx1}.${idx2}.${idx3}">${idx}.${idx1}.${idx2}.${idx3}.</a> ${val3.querySelector(`.para-title`).innerHTML}<li>`;
+                        });
+                    });
+                });
+            });
+            rtv += `</ul>`;
+            return rtv;
+        })();
+        }
+        document.querySelector(':root').style.removeProperty('--display-rel-size');
+        document.querySelector(':root').style.setProperty('--display-rel-size', window.innerWidth / 1500);
+        var navinp = document.querySelectorAll('nav .navinp')[0];
+        if (navinp != undefined && navinp !=null) {
+            navinp.addEventListener('keyup',function(ev){
+                socket.emit('search_data',{search_keyword:navinp.value});
+            });
+        }
+        if (document.querySelector('.wiki-content') !=null){
+            document.querySelector('.wiki-content').classList.add("enablepopover");
+        }
+        
+        
+cgrcssjs.styleAll();
+    });
+    window.addEventListener("load",function(ev){
+        document.querySelector(':root').style.removeProperty('--cgr-basic-unit');
+        document.querySelector(':root').style.setProperty('--cgr-basic-unit', (window.innerWidth / 1400)+'px');
+        document.querySelector(':root').style.removeProperty('--display-rel-size');
+        document.querySelector(':root').style.setProperty('--display-rel-size', window.innerWidth / 2000);
+        /*if (typeof new URL(location.href).searchParams.get('from') == 'string'){
+            document.querySelector('.wiki-content').innerHTML = `<div style="height:1.8em;width:60vw;background:lightblue;color:#404060;text-align:center;border-radius:3vmax;"><a href="/wiki/${new URL(location.href).searchParams.get('from')}?noredirect=1">${new URL(location.href).searchParams.get('from')}</a>에서 넘어옴</div>`+document.querySelector('.wiki-content').innerHTML;
+        }
+        if (localStorage.disablepopup_that_recommends_PC) {
+            if (localStorage.disablepopup_that_recommends_PC==1){
+                document.getEl_Class("body")[0].classList.add("shadowbody");
+                document.body.innerHTML+=`<div class="popover-box">이 위키는 PC버전을 권장합니다.<br> 이미 데스크톱을 쓰고 있나요? 혹은 그냥 모바일을 사용해도 괜찮은가요? <br><br><br> <div class="btn-group" style="--bs-border-radius:1.5rem;"><button onclick="document.getEl_Class('body')[0].classList.remove('shadowbody'); this.parentElement.parentElement.remove();" class="btn btn-success split gap-left">닫&times;기</button><button onclick="document.getEl_Class('body')[0].classList.remove('shadowbody');localStorage.disablepopup_that_recommends_PC=0; this.parentElement.parentElement.remove();" class="btn btn-success split gap-right">앞으로 이 팝업 보지 않고 닫&times;기</button></div></div>`;
+            }
+        } else {
+            localStorage.disablepopup_that_recommends_PC=1;
+            document.getEl_Class("body")[0].classList.add("shadowbody");
+            document.body.innerHTML+=`<div class="popover-box">이 위키는 PC버전을 권장합니다.<br> 이미 데스크톱을 쓰고 있나요? 혹은 그냥 모바일을 사용해도 괜찮은가요? <br><br><br> <div class="btn-group" style="--bs-border-radius:1.5rem;"><button onclick="document.getEl_Class('body')[0].classList.remove('shadowbody'); this.parentElement.parentElement.remove();" class="btn btn-success split gap-left">닫&times;기</button><button onclick="document.getEl_Class('body')[0].classList.remove('shadowbody');localStorage.disablepopup_that_recommends_PC=0; this.parentElement.parentElement.remove();" class="btn btn-success split gap-right">앞으로 이 팝업 보지 않고 닫&times;기</button></div></div>`;
+        }*/
+    });
+    window.addEventListener("resize",function(ev){
+        document.querySelector(':root').style.removeProperty('--cgr-basic-unit');
+        document.querySelector(':root').style.setProperty('--cgr-basic-unit', (window.innerWidth / 1400)+'px');
+        document.querySelector(':root').style.removeProperty('--display-rel-size');
+        document.querySelector(':root').style.setProperty('--display-rel-size', window.innerWidth / 2000);
+    });
+    socket.on('client_got_search_data',function(msg){
+        var search_data_el_pr = document.createElement('div');
+        search_data_el_pr.setAttribute('class','search-data-list');
+        var newinner='';
+        msg.data.forEach(function(val,idx,arr){
+            newinner+=`<li class="autocorr"><a href="/wiki/${val}">${val}</a></li>`;
+        });
+        newinner = `<ul>${newinner}</ul>`;
+        var search_data_el_outer=document.querySelector(`#search_autocomp_results`);
+        var search_data_el;
+        if (search_data_el_outer!=undefined&&search_data_el_outer!=null){
+            search_data_el_outer.innerHTML='';
+            search_data_el=search_data_el_outer.appendChild(search_data_el_pr);
+            search_data_el.innerHTML=newinner;
+        }
+    });
+    window.addEventListener("click",function(ev){
+        if (ev.target.id!='search_autocomp_results'&&document.querySelector('#search_autocomp_results').innerHTML!=''&&ev.target.className!='autocorr') {
+            document.querySelector('#search_autocomp_results').innerHTML='';
+        }
+    });
+</script>

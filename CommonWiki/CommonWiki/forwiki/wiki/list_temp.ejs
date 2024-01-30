@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>documents</title>
+</head>
+
+<body>
+    <div class="body">
+        <%- include('navbar.ejs');%>
+            <div class="content">
+                <% if (info.listtype!='userlist'){%>
+                <ul class="doclist">
+                    <% for (var i=0;i< info.doclist.length;i++) {%>
+                        <li><%- info.doclist[i]%></li>
+                        <% }%>
+                </ul><% } else {%>
+                <ul class="doclist">
+                    <% for (var i=0;i< info.doclist.length;i++) {%>
+                        <li>계정 아이디 / 회원이 아니라면 아이피 주소: <%- info.doclist[i].id%>|접속 일시: <%- info.doclist[i].date%>|<% if (info.admin_level<2){%>이미 회원이지만 아이피 보기:<%- info.doclist[i].ipaddress%>|<% }%></li>
+                        <% }%>
+                </ul><% }%>
+            </div>
+    </div>
+</body>
+
+</html>

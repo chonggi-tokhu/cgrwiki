@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>change password</title>
+</head>
+
+<body>
+    <%- include('navbar.ejs')%>
+        <div class="body">
+            <form action="/change_pwreq" method="post">
+                <fieldset>
+                    <legend>비밀번호 변경(아이디는 변경불가)</legend>
+                    <label>비밀번호 확인: <input type="text" id="cpw" name="cpw"></label>
+                    <label for="pw">새 비밀번호: </label><input type="password" name="pw" id="pw" placeholder="new password"
+                        required>
+                    <button type="submit" class="btn btn-orange">변경!</button>
+                </fieldset>
+            </form>
+        </div>
+</body>
+
+</html>

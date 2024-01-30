@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin page - CommonWiki!</title>
+    
+</head>
+
+<body>
+    <div class="body-bg">
+        <div class="body">
+            <%- include('../navbar.ejs')%>
+            <div style="display:flex;" class="wiki-content">
+                <div class="vertical-navbar" data-customcolour="blue">
+                    <nav class="navbar vertical-nav left navbar_custom sub_nav bluenav vertical-navbar" data-main-and-sub="sub">
+                        <div class="container-fluid">
+                            
+                            
+                            <div style="margin-top:8em;">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item"><a class="link-btn btn btn-customcolour nav-link" href="/">Home</a></li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active link-btn btn btn-customcolour" aria-current="page" href="/admin_page">admin page</a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <div class="btn-group dropend">
+                                            <button type="button" class="btn btn-customcolour gap-left split">
+                                                menu
+                                            </button>
+                                            <button type="button" class="btn btn-customcolour dropdown-toggle dropdown-toggle-split gap-right split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropend</span>
+                                            </button>
+                                            <ul class="dropdown-menu" style="color:#fff !important">
+                                                <li><a <% if (info.admin_page.perm.design==true) {%> href="/design" style="color:#fff !important" <% } else {%> href="#" <% }%> class="dropdown-item link-btn btn btn-customcolour <% if (info.admin_page.perm.design==false){%> disabled <%}%>">design 상단 내브바 디자인 <sub><small>디자인 권한이 있는 관리자만 가능</small></sub> <% if (info.admin_page.perm.design==false){%>( disabled )<%}%></a></li>
+                                                <li><a <% if (info.admin_page.admin_level<2) {%> href=" /manage_member" style="color:#fff !important" <% } else{%> href="#" <% }%> class="dropdown-item link-btn btn btn-customcolour <% if (info.admin_page.admin_level >=2) {%> disabled <% }%>">manage member 회원관리 <sub><small>1등급~0등급 관리자만 ㄱㄴ </small></sub> <% if (info.admin_page.admin_level >=2) {%> ( disabled ) <% }%> </a></li>
+                                                <li><a href="#" style="color:#fff !important" class="dropdown-item link-btn btn btn-customcolour <% if (info.admin_page.admin_level >=1) {%> disabled <% }%>" <% if (info.admin_page.admin_level < 1) {%> id="stop_server" <% }%>>stop server... 서버 응급정지 (0등급 관리자만 ㄱㄴ) <% if (info.admin_page.admin_level >=1) {%>( disabled )<% }%></a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="main" style="margin-left:10em;">
+                    <div style="display:flex">
+                        <div class="tabs_wrapper container text-center">
+                            <div class="tab_select row">
+                                <div class="select col showntabselect">접속자 통계</div>
+                                <div class="select col">위키 관리</div>
+                                <div class="select col">문서별 통계</div>
+                            </div>
+                            <div class="tabs_group row">
+                                <div class="tab col showntab" id="viewers">
+                                    <ul>
+                                    <li><h4>최근 접속하고 문서 본 사람들 1000<span style="font-size:85%;font-weight:700;"><a href="/fullview">전체 목록 확인하기</a></span></h4></li>
+                                    <% for (var i2 = 0;i2<info.admin_page.recent_viewers.length && i2<1000;i2++){%>
+                                    <li><%- info.admin_page.recent_viewers[i2].id%></li>
+                                    <%}%>
+                                    </ul>
+                                </div>
+                                <div class="tab col" id="manage">
+                                    <div class="managing">
+                                        <div class="row row-cols-1 row-cols-md-3 g-6">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <img src="..." class="card-img-top" alt="...">
+                                                    <div class="card-header">
+                                                        <h4>members</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="members">
+                                                            <ul>
+                                                                <li>
+                                                                    <h4>members</h4>
+                                                                </li>
+                                                                <% for (var i = 0;i<info.admin_page.members.length;i++){%>
+                                                                <li><a href="/wiki/사용자:<%- info.admin_page.members[i].id %>" target="_blank"><%- info.admin_page.members[i].id %></a></li>
+                                                                <% }%>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card">
+                                                    <img src="..." class="card-img-top" alt="...">
+                                                    <div class="card-header">
+                                                        <h4>메인 내브바(내비게이션 바) 스타일 미리보기</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="navbar_preview">
+                                                            이 기능은 현재 지원되지 않습니다.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card">
+                                                    <img src="..." class="card-img-top" alt="...">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Card title</h5>
+                                                        <% for (var i2 = 0;i2<info.admin_page.recsimple.length;i2++){%>
+                                    <li><%- info.admin_page.recsimple[i2].id%></li>
+                                    <%}%>
+                                    </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="card">
+                                                    <img src="..." alt="" class="card-img-top" alt="...">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title"></h5>
+                                                        <div class="card-text">
+                                                            <p><span></span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab col" id="edits">
+                                    <div class="docs">
+                                        <ul>
+                                            <li style="list-style-type: none;"><h4>문서별 통계</h4></li>
+                                            <% for (var i1 = 0;i1<info.admin_page.edit_recently.length;i1++ ) {%> 
+                                            <li><a href="/wiki/<%- info.admin_page.edit_recently[i1].docname%>" target="_blank"><%- info.admin_page.edit_recently[i1].docname%></a><%- info.admin_page.edit_recently[i1].editor.id%>에 의해 <%- info.admin_page.edit_recently[i1].date%>에 편집됨</li>
+                                            <% }%>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("stop_server").addEventListener("click",function(ev){
+            var newform = document.createElement("form");
+            newform.setAttribute("method","post");
+            newform.setAttribute("action","/stop_server");
+            var newform2 = document.body.appendChild(newform);
+            newform2.submit();
+        });
+    </script>
+</body>
+
+</html>

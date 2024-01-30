@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= info.docname %> - Colourgrey Wiki
+    </title>
+</head>
+
+<body>
+    <div class="body">
+        <%- include('navbar.ejs')%>
+        <script src="/ColourgreyShorterJS/colourpicker.js"></script>
+        <script src="/ColourgreyShorterJS/colourpicker.js"></script>
+        <div class="wiki-content">
+            <h1><%- info.docname %> <%- info.message%></h1>
+            <div class="document"><%- info.content %></div>
+            <h3>이 문서의 역링크들</h3>
+            <ul>
+                <% for (var i=0;i<info.docs.length;i++ ) { %>
+                <li><a href="<%- info.docs[i].link %>"><%- info.docs[i].docname %></a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+    <script src="/ColourgreyShorterJS/wiki_content.js"></script>
+    <script>
+        var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
+        cgrcssjs.styleAll();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+{
+    "users": [
+        {
+            "id": "실험용 첫 아이디",
+            "pw": "password",
+            "admin_level": 0,
+            "isadmin": true,
+            "perm": {
+                "design": true
+            },
+            "banned": false
+        }
+    ]
+}

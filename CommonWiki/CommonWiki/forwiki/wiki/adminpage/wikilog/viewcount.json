@@ -1,0 +1,16 @@
+{
+    "list": [
+        {
+            "id": "실험용 첫 아이디",
+            "pw": "passowrd",
+            "admin_level": 0,
+            "isadmin": true,
+            "perm": {
+                "design": true
+            },
+            "banned": false,
+            "ipaddress": "아이피주소",
+            "date": "2024년 1월 30일 18시 47분 36.0.546초"
+        }
+    ]
+}

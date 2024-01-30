@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= info.docname %> - Chess Wiki
+    </title>
+    <script src="/ColourgreyShorterJS/wiki_rule.js"></script>
+</head>
+
+<body>
+    <div class="body">
+        <%- include('navbar.ejs')%>
+        <script src="/ColourgreyShorterJS/colourpicker.js"></script>
+        <script src="/ColourgreyShorterJS/colourpicker.js"></script>
+        <div class="wiki-content">
+            <h1>' <%- info.docname %> ' <%- info.message%></h1>
+            <div class="btn-group" style="--bs-border-radius:1.5rem">
+                        <a class="btn btn-primary split gap-right gap-left" id="namechange" style="color:#fff;" onclick="this.href=decodeURI(new globalThis.URL(location.href).pathname).replace('edit','change')+'?to='+document.getElementById('changename').value.replaceAll(' ','+');">문서 이동</a>
+                        <input type="text" name="changename" id="changename" placeholder="변경할 문서명" onkeyup="document.getElementById('namechange').href=decodeURI(new globalThis.URL(location.href).pathname).replace('edit','change')+'?to='+this.value.replaceAll(' ','+')"></div>
+            <form method="post" action="/editreq?docname=<%- info.docname %>" class="wiki-form">
+                <fieldset>
+                    <legend><%- info.message%></legend>
+                    <div style="display:flex">
+                        <div class="tabs_wrapper container text-center">
+                            <div class="tab_select row">
+                                <div class="select col showntabselect">text editor 텍스트 에디터</div>
+                                <div class="select col">visual editor 비주얼 에디터(폐기. 사용못함)</div>
+                                <div class="select col">preview 미리보기</div>
+                            </div>
+                            <div class="tabs_group row">
+                                <div class="tab col showntab">
+                                    <div contenteditable="true" id="content" class="withplaceholder">
+                                        <%= info.content %>
+                                    </div>
+                                </div>
+                                <div class="tab col">
+                                    <div id="visual_editor" contenteditable="true"></div>
+                                </div>
+                                <div class="tab col">
+                                    <div id="preview"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="hiddeninput" name="hiddeninput">
+                    <div class="btn-group" style="--bs-border-radius:1.5rem">
+                        <button class="btn btn-primary split gap-left" type="submit">편집 보내기</button>
+                        <button class="btn btn-primary split gap-right">아무 기능 없는 버튼</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <script>
+        var temps = [];
+        <% for (var i8=0;i8<info.temps.length;i8++){  %> temps[temps.length] = {
+            n: '<%- info.temps[i8].n%>',
+            c: '<%- info.temps[i8].c%>'
+        }
+        <% }%>
+        var parserule = wiki_rule({
+            fs: {
+                templates: temps,
+                existsSync: function(str) {
+                    var rtv = false;
+                    temps.forEach(function(val, idx, arr) {
+                        if (val.n == str) {
+                            rtv = true;
+                        }
+                        console.log(val.n);
+                    });
+                    return rtv;
+                }
+            }
+        });
+        
+        function parsedstrfunc() {
+            return parserule(document.getElementById("content").innerText);
+        }
+        window.addEventListener("keyup", function(ev) {
+            document.getElementById("preview").innerHTML = parsedstrfunc();
+        });
+        window.addEventListener("load", function(ev) {
+            document.getElementById("preview").innerHTML = parsedstrfunc();
+        });
+    </script>
+    <script src="/ColourgreyShorterJS/editor.js"></script>
+    <script src="/ColourgreyShorterJS/wiki_content.js"></script>
+    <script>
+        var cgrcssjs = new ColourgreyShorterJS.ColourgreyShorterCSS(false);
+        cgrcssjs.styleAll();
+    </script>
+</body>
+
+</html>

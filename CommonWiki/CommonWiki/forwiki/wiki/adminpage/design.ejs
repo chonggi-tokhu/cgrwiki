@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>design navbar</title>
+</head>
+
+<body>
+    <div id="navbar0">
+        <%- include('../navbar.ejs')%>
+    </div>
+    <form action="/designreq" method="post">
+        <fieldset>
+            <legend>내비게이션 바(내브바)를 디자인합니다(물론 위키문법이 아니라 html로요)</legend>
+            <div id="design" contenteditable="true">
+                <%- info.navbar%>
+            </div>
+            <iframe id="preview" frameborder="0"></iframe>
+            <input type="hidden" name="hiddeninput" id="hiddeninput">
+            <button type="submit" class="btn btn-primary">전송</button>
+        </fieldset>
+    </form>
+    <script>
+        function htmlfunc(str) {
+            return str.replaceAll(`&gt;`, `>`).replaceAll(`&lt;`, `<`).replaceAll(`&apos;`, `'`).replaceAll(`&quot;`, `"`);
+        }
+        document.getElementById("hiddeninput").value = document.getElementById("content").innerText;
+        document.getElementById('preview').srcdoc = htmlfunc(ev.target.innerText);
+        document.getElementById("design").addEventListener("keyup", function (ev) {
+            document.getElementById('preview').srcdoc = htmlfunc(ev.target.innerText);
+            document.getElementById("hiddeninput").value = htmlfunc(document.getElementById("content").innerText);
+        });
+    </script>
+</body>
+
+</html>

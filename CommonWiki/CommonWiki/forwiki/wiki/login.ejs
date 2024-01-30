@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+
+<body>
+    <div class="body">
+        <%- include('navbar.ejs')%>
+            <form action="/loginreq" method="post" class="login_form">
+                <a href="/join">회원가입</a>
+                <fieldset>
+                    <legend>컬그위키에 로그인</legend>
+                    <input type="text" id="id" name="id">
+                    <input type="password" id="pw" name="pw">
+                    <label><input type="checkbox" id="pwpw">비밀번호 보이기</label>
+                    <button type="submit">로그인</button>
+                </fieldset>
+            </form>
+    </div>
+    <script>
+        document.getElementById("pwpw").addEventListener("click", function (ev) {
+            if (document.getElementById("pwpw").checked) {
+                document.getElementById("pw").setAttribute("type", "text");
+            } else {
+                document.getElementById("pw").setAttribute("type", "password");
+            }
+        });
+    </script>
+</body>
+
+</html>

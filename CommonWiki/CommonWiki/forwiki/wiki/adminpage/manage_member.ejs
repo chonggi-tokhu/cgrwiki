@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin page - CommonWiki!</title>
+
+</head>
+
+<body>
+    <div class="body-bg">
+        <div class="body">
+            <%- include('../navbar.ejs')%>
+                <div class="main">
+                    <form action="/manage_memberreq" method="post">
+                        <fieldset>
+                            <legend>manage member-회원관리</legend>
+                            <input type="text" name="targetid" id="targetid" required>
+                            <select name="type" id="type">
+                                <option value="ban">ban a member-멤버 밴하기</option>
+                                <option disabled>-only level-0 admin can change member level-</option>
+                                <option value="level">멤버등급 변경</option>
+                                <option value="makedesigner">디자인 권한 주기</option>
+                            </select>
+                            <input type="number" placeholder="변경할 멤버등급" id="level" name="level">
+                            <button type="submit" class="btn btn-danger">작업 실행</button>
+                        </fieldset>
+                    </form>
+                </div>
+        </div>
+    </div>
+</body>
+
+</html>
